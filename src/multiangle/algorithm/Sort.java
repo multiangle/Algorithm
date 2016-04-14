@@ -76,7 +76,7 @@ public class Sort {
         merge_sort(inputArray,0,inputArray.length);
     }
     public static void main(String[] args){
-        Integer[] data = {1,2,3,4,5,6,4,3,2,1,6,8,9,5,6,7,1,2,3,4,5,6,7,8,9} ;
+        Double[] data = {1.0,2.0,3.0,4.0,5.5,5.1,6.6,4.2,3.2,1.5,3.8,3.9,4.5,3.8} ;
         Sort.merge_sort(data);
         System.out.println(Arrays.toString(data));
     }
