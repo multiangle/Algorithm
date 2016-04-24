@@ -11,4 +11,10 @@ public class BinaryTreeNode<T> {
     BinaryTreeNode(T val){
         this.val = val ;
     }
+    public boolean hasLChild(){
+        return (left!=null) ;
+    }
+    public boolean hasRChild(){
+        return (right!=null);
+    }
 }
