@@ -6,7 +6,6 @@ package multiangle.algorithm.BinaryTree;
 public abstract class BinaryTreeAbs {
     protected BinaryTreeNode root ;
 
-    public abstract int getSize(BinaryTreeNode root);
     public abstract boolean isEmpty(BinaryTreeNode root) ;
 
     public abstract void travLevel() ;

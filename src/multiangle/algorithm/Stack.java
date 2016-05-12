@@ -10,7 +10,7 @@ public class Stack<T> {
     private ArrayList<T> data ;
     private int size ;
 
-    Stack(){
+    public Stack(){
         data = new ArrayList<T>() ;
         size = 0 ;
     }
@@ -43,5 +43,7 @@ public class Stack<T> {
         return data.isEmpty() ;
     }
 
-
+    public String toString(){
+        return this.data.toString() ;
+    }
 }

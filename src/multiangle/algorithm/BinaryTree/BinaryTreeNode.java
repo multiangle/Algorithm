@@ -3,12 +3,16 @@ package multiangle.algorithm.BinaryTree;
 /**
  * Created by multiangle on 2016/4/20.
  */
-public class BinaryTreeNode<T> {
-    protected T val ;
-    protected BinaryTreeNode left ;
-    protected BinaryTreeNode right ;
+public class BinaryTreeNode {
+    public int value ;
+    public BinaryTreeNode left ;
+    public BinaryTreeNode right ;
 
-    BinaryTreeNode(T val){
-        this.val = val ;
+    BinaryTreeNode(int val){
+        this.value = val ;
+    }
+
+    public String toString(){
+        return Integer.toString(value);
     }
 }
