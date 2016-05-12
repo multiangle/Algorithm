@@ -15,4 +15,10 @@ public class BinaryTreeNode {
     public String toString(){
         return Integer.toString(value);
     }
+    public boolean hasLChild(){
+        return (left!=null) ;
+    }
+    public boolean hasRChild(){
+        return (right!=null);
+    }
 }
