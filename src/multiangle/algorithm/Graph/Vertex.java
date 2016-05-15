@@ -3,8 +3,9 @@ package multiangle.algorithm.Graph;
 /**
  * Created by multiangle on 2016/5/13.
  */
-public class Vertex<T> {
-    public T data ;                       // 数据
+public class Vertex<TV> {
+    public int id ;                       //节点id
+    public TV data ;                       // 数据
     public int inDegree,outDegree ;    //出入度数
     public VStatus status ;              // 如下三种状态
     public int dTime,fTime ;            // 时间标签
