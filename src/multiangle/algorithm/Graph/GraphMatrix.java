@@ -1,6 +1,7 @@
 package multiangle.algorithm.Graph;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 /**
  * Created by multiangle on 2016/5/13.
@@ -49,9 +50,24 @@ public class GraphMatrix<TV,TE> {
             E.get(from).set(to,e) ;
         }
     }
-
+    public void addUDEdge(int va,int vb){
+        addEdge(va,vb);
+        addEdge(vb,va);
+    }
     public void BFS(int start_vertex_id){
-        
+        ArrayList<Vertex<TV>> queue = new ArrayList<Vertex<TV>>() ;
+        queue.add(V.get(start_vertex_id)) ;
+        while (!queue.isEmpty()){
+            Vertex v = queue.remove(0) ;
+            System.out.println(v.data);
+            ArrayList<Edge<TE>> e_l = E.get(v.id) ;
+            for (int j=0; j<e_l.size(); j++){
+                if ((e_l.get(j)!=null)&&(V.get(j).status==VStatus.UNDISCOVERED)){
+                    V.get(j).status=VStatus.DISCOVERED ;
+                    queue.add(V.get(j));
+                }
+            }
+        }
     }
 
     public int getVertexSize(){return vertex_num ;}
@@ -64,4 +80,27 @@ public class GraphMatrix<TV,TE> {
     public int getParent(int i){return V.get(i).parent ;}
     public int getPriority(int i){return V.get(i).priority ;}
 
+    public static void main(String[] args){
+        GraphMatrix<String,Integer> g = new GraphMatrix<String, Integer>() ;
+        g.addVertex("a") ; //0
+        g.addVertex("s") ; //1
+        g.addVertex("e") ; //2
+        g.addVertex("d") ; //3
+        g.addVertex("c") ; //4
+        g.addVertex("f") ; //5
+        g.addVertex("b") ; //6
+        g.addVertex("g") ; //7
+        g.addUDEdge(0,1);
+        g.addUDEdge(0,2);
+        g.addUDEdge(0,4);
+        g.addUDEdge(1,3);
+        g.addUDEdge(1,4);
+        g.addUDEdge(2,5);
+        g.addUDEdge(2,7);
+        g.addUDEdge(3,6);
+        g.addUDEdge(4,6);
+        g.addUDEdge(5,7);
+        g.addUDEdge(6,7);
+        g.BFS(1);
+    }
 }
