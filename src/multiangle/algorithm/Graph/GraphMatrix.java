@@ -84,44 +84,36 @@ public class GraphMatrix<TV,TE> {
     }
 
     public void DFS(int start_vertex_id){
-        if (directed){
-            // 此处处理有向图的情况
-            Vertex<TV> node = V.get(start_vertex_id) ;
-            node.status = VStatus.DISCOVERED ;
-        }else{
-            // 此处处理无向图的情况
-            Vertex<TV> node = V.get(start_vertex_id) ;
-            node.status = VStatus.DISCOVERED ;
-            System.out.println(node.data);
-            node.dTime = clock++ ;
-            for (int i=0;i<vertex_num;i++){
-                if (E.get(start_vertex_id).get(i)!=null){
-                    switch (V.get(i).status){
-                        case UNDISCOVERED: {
-                            E.get(start_vertex_id).get(i).status = Estatus.TREE ; //这条边属于支撑树
-                            V.get(i).parent = start_vertex_id ;
-                            DFS(i);
-                            break ;
-                        }
-                        case DISCOVERED:{
-                            E.get(start_vertex_id).get(i).status = Estatus.BACKWARD ; //后向边，连向直系祖先
-                            break ;
-                        }
-                        default:{
-                            // 处理连向节点是visited的情况
-                            if (node.dTime<V.get(i).dTime){ // dTime(v) < dTime(u)
-                                E.get(start_vertex_id).get(i).status = Estatus.FORWARD ;
-                            }else{
-                                E.get(start_vertex_id).get(i).status = Estatus.CROSS ;
-                            }
+        Vertex<TV> node = V.get(start_vertex_id) ;
+        node.status = VStatus.DISCOVERED ;
+        System.out.println(node.data);
+        node.dTime = clock++ ;
+        for (int i=0;i<vertex_num;i++){
+            if (E.get(start_vertex_id).get(i)!=null){
+                switch (V.get(i).status){
+                    case UNDISCOVERED: {
+                        E.get(start_vertex_id).get(i).status = Estatus.TREE ; //这条边属于支撑树
+                        V.get(i).parent = start_vertex_id ;
+                        DFS(i);
+                        break ;
+                    }
+                    case DISCOVERED:{
+                        E.get(start_vertex_id).get(i).status = Estatus.BACKWARD ; //后向边，连向直系祖先
+                        break ;
+                    }
+                    default:{
+                        // 处理连向节点是visited的情况
+                        if (node.dTime<V.get(i).fTime){ // dTime(v) < fTime(u)
+                            E.get(start_vertex_id).get(i).status = Estatus.FORWARD ;
+                        }else{
+                            E.get(start_vertex_id).get(i).status = Estatus.CROSS ;
                         }
                     }
                 }
             }
-            node.dTime = clock++ ;
-            node.status = VStatus.VISITED ;
         }
-
+        node.fTime = clock++ ;
+        node.status = VStatus.VISITED ;
     }
 
     public int getVertexSize(){return vertex_num ;}
@@ -135,26 +127,25 @@ public class GraphMatrix<TV,TE> {
     public int getPriority(int i){return V.get(i).priority ;}
 
     public static void main(String[] args){
-        GraphMatrix<String,Integer> g = new GraphMatrix<String, Integer>(false) ;
+        GraphMatrix<String,Integer> g = new GraphMatrix<String, Integer>(true) ;
         g.addVertex("a") ; //0
-        g.addVertex("s") ; //1
-        g.addVertex("e") ; //2
+        g.addVertex("b") ; //1
+        g.addVertex("c") ; //2
         g.addVertex("d") ; //3
-        g.addVertex("c") ; //4
+        g.addVertex("e") ; //4
         g.addVertex("f") ; //5
-        g.addVertex("b") ; //6
-        g.addVertex("g") ; //7
+        g.addVertex("g") ; //6
         g.addEdge(0, 1);
-        g.addEdge(0, 2);
-        g.addEdge(0, 4);
-        g.addEdge(1, 3);
-        g.addEdge(1, 4);
-        g.addEdge(2, 5);
-        g.addEdge(2, 7);
-        g.addEdge(3, 6);
-        g.addEdge(4, 6);
-        g.addEdge(5, 7);
-        g.addEdge(6, 7);
-        g.DFS(1);
+        g.addEdge(0,2);
+        g.addEdge(0,5);
+        g.addEdge(1,2);
+        g.addEdge(5,4);
+        g.addEdge(4,0);
+        g.addEdge(4,2);
+        g.addEdge(3,0);
+        g.addEdge(3,6);
+        g.addEdge(6,5);
+        g.DFS(3);
+        System.out.println();
     }
 }
