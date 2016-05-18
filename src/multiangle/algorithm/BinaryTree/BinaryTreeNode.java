@@ -11,14 +11,16 @@ public class BinaryTreeNode {
     BinaryTreeNode(int val){
         this.value = val ;
     }
-
-    public String toString(){
-        return Integer.toString(value);
-    }
     public boolean hasLChild(){
         return (left!=null) ;
     }
     public boolean hasRChild(){
         return (right!=null);
+    }
+    public boolean valueEqual(int i){
+        return value==i;
+    }
+    public String toString(){
+        return Integer.toString(value);
     }
 }

@@ -13,7 +13,7 @@ import java.util.Queue;
 public class BinaryTree{
     // _size,root
 
-    public boolean isEmpty(BinaryTreeNode root){
+    public static boolean isEmpty(BinaryTreeNode root){
         if (root == null) return true ;
         return false ;
     }
@@ -92,6 +92,6 @@ public class BinaryTree{
         btn1.right = btn3 ;
         btn2.left = btn4 ;
         btn3.right = btn5 ;
-        System.out.println(travLevel(btn1));
+        System.out.println(BinaryTree.travLevel(btn1));
     }
 }
