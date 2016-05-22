@@ -12,7 +12,6 @@ import java.util.Queue;
 
 public class BinaryTree{
     // _size,root
-
     public static boolean isEmpty(BinaryTreeNode root){
         if (root == null) return true ;
         return false ;

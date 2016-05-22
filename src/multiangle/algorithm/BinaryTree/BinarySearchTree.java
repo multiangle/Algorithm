@@ -6,6 +6,7 @@ package multiangle.algorithm.BinaryTree;
 
 import multiangle.algorithm.BinaryTree.BinaryTree ;
 import multiangle.algorithm.BinaryTree.BinaryTreeNode ;
+import multiangle.algorithm.Stack;
 
 public class BinarySearchTree extends BinaryTree{
     private BinaryTreeNode root ;
@@ -20,19 +21,83 @@ public class BinarySearchTree extends BinaryTree{
         while(true){
             if (target == node.value) return node ;
             if (target < node.value){
+                _hot = node ;
                 if (node.hasLChild()) {
-                    _hot = node ;
                     node = node.left ;
                 }
                 else return null ;
             }else{
+                _hot = node ;
                 if (node.hasRChild()) {
-                    _hot = node ;
                     node = node.right ;
                 }
                 else return null ;
             }
         }
+    }
+
+    public boolean insert(int value){
+        if (this.root==null){
+            this.root = new BinaryTreeNode(value) ;
+            return true ;
+        }
+
+        BinaryTreeNode res = search(value) ;
+        if (res==null) {
+            if (value<this._hot.value) this._hot.left = new BinaryTreeNode(value) ;
+            else this._hot.right = new BinaryTreeNode(value) ;
+            return true ;
+        }else{
+            return false ;
+        }
+
+    }
+
+    public boolean remove(int value){
+        BinaryTreeNode res = search(value) ;
+        if (res==null) return false ;
+        if (res==root) {root=null ;return true ;}
+        if (res.left==null) {
+            if (_hot.left == res) _hot.left = res.right ;
+            else _hot.right = res.right ;
+        }
+        else if (res.right==null){
+            if (_hot.left == res) _hot.left = res.left ;
+            else _hot.right = res.left ;
+        }
+        else{
+            // 若左右结点均不为空
+            BinaryTreeNode next = nextNode(value) ;
+            int temp = res.value ;
+            res.value = next.value ;
+            next.value = temp ;
+            remove(value) ;
+        }
+        return true ;
+
+    }
+
+    public BinaryTreeNode nextNode(int value){
+        BinaryTreeNode ret = null ;
+        boolean finded = false ;
+        boolean goon = true ;
+
+        Stack<BinaryTreeNode> stack = new Stack() ;
+        BinaryTreeNode node = root ;
+        while (goon){
+            // go along left tree
+            while (node!=null) {
+                stack.push(node) ;
+                node = node.left ;
+            }
+            if (stack.isEmpty()) break ;
+            // visit node
+            node = stack.pop() ;
+            if (finded) {ret = node; goon=false; }
+            if (node.value==value) finded=true ;
+            node = node.right ;
+        }
+        return ret ;
     }
 
     public static void main(String[] args){
@@ -45,7 +110,7 @@ public class BinarySearchTree extends BinaryTree{
         btn1.right = btn3 ;
         btn2.left = btn4 ;
         btn3.right = btn5 ;
-        System.out.println(travIn(btn1));
-        System.out.println(getHeight(btn1));
+        BinarySearchTree bst = new BinarySearchTree(btn1) ;
+        System.out.println(bst.nextNode(4));
     }
 }
