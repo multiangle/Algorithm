@@ -11,24 +11,41 @@ import java.util.Queue;
  */
 
 public class BinaryTree{
-    // _size,root
-    public static boolean isEmpty(BinaryTreeNode root){
+    protected BinaryTreeNode root ;
+
+    BinaryTree(){
+        this.root = null ;
+    }
+    BinaryTree(BinaryTreeNode root){
+        this.root = root ;
+    }
+
+    public boolean isEmpty(){
         if (root == null) return true ;
         return false ;
     }
-    public static int getSize(BinaryTreeNode root){
+    public int getSize(){
+        return getSize(root) ;
+    }
+    public int getSize(BinaryTreeNode root){
         if (root==null) return 0 ;
         int left = getSize(root.left) ;
         int right = getSize(root.right) ;
         return left + right + 1 ;
     }
-    public static int getHeight(BinaryTreeNode root){
+    public int getHeight(){
+        return getHeight(root) ;
+    }
+    public int getHeight(BinaryTreeNode root){
         if (root==null) return -1 ;
         int left = getHeight(root.left) ;
         int right = getHeight(root.right) ;
         return Math.max(left,right) + 1 ;
     }
-    public static String travLevel(BinaryTreeNode root){
+    public String travLevel(){
+        return travLevel(root) ;
+    }
+    public String travLevel(BinaryTreeNode root){
         ArrayList<BinaryTreeNode> list = new ArrayList<BinaryTreeNode>() ;
         String ret_str = "" ;
         BinaryTreeNode node = null ;
@@ -41,7 +58,10 @@ public class BinaryTree{
         }
         return ret_str ;
     }
-    public static String travIn(BinaryTreeNode root){
+    public String travIn(){
+        return travIn(root) ;
+    }
+    public String travIn(BinaryTreeNode root){
         Stack<BinaryTreeNode> stack = new Stack() ;
         BinaryTreeNode node = root ;
         String ret_str = "" ;
@@ -59,7 +79,10 @@ public class BinaryTree{
         }
         return ret_str ;
     }
-    public static String travPre(BinaryTreeNode root){
+    public String travPre(){
+        return travPre(root) ;
+    }
+    public String travPre(BinaryTreeNode root){
         Stack<BinaryTreeNode> stack = new Stack() ;
         stack.push(root);
         BinaryTreeNode node = null ;
@@ -74,7 +97,10 @@ public class BinaryTree{
         }
         return ret_str ;
     }
-    public static String travPost(BinaryTreeNode root){
+    public String travPost(){
+        return travPost(root) ;
+    }
+    public String travPost(BinaryTreeNode root){
         if (root == null) return "" ;
         String r_l = travPost(root.left) ;
         String r_r = travPost(root.right) ;
@@ -91,6 +117,7 @@ public class BinaryTree{
         btn1.right = btn3 ;
         btn2.left = btn4 ;
         btn3.right = btn5 ;
-        System.out.println(BinaryTree.travLevel(btn1));
+        BinaryTree bt = new BinaryTree(btn1) ;
+        System.out.println(bt.getSize());
     }
 }

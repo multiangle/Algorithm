@@ -9,10 +9,16 @@ import multiangle.algorithm.BinaryTree.BinaryTreeNode ;
 import multiangle.algorithm.Stack;
 
 public class BinarySearchTree extends BinaryTree{
-    private BinaryTreeNode root ;
+    // root
     private BinaryTreeNode _hot = null ;
-    BinarySearchTree(BinaryTreeNode root){
-        this.root = root ;
+
+    public BinarySearchTree(BinaryTreeNode root){
+        super(root);
+        _hot = null ;
+    }
+    public BinarySearchTree(){
+        super();
+        _hot = null ;
     }
 
     public BinaryTreeNode search(int target){
@@ -39,6 +45,7 @@ public class BinarySearchTree extends BinaryTree{
     public boolean insert(int value){
         if (this.root==null){
             this.root = new BinaryTreeNode(value) ;
+            System.out.println(this.root.getClass());
             return true ;
         }
 
