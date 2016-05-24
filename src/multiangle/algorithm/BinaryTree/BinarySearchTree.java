@@ -22,6 +22,7 @@ public class BinarySearchTree extends BinaryTree{
     }
 
     public BinaryTreeNode search(int target){
+        if (root==null) return null ;
         _hot = null ; // 清空_hot
         BinaryTreeNode node = root ;
         while(true){

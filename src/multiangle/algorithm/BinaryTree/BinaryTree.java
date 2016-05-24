@@ -61,14 +61,14 @@ public class BinaryTree{
     public String travIn(){
         return travIn(root) ;
     }
-    public String travIn(BinaryTreeNode root){
+    public String travIn(BinaryTreeNode in){
         Stack<BinaryTreeNode> stack = new Stack() ;
-        BinaryTreeNode node = root ;
+        BinaryTreeNode node = in ;
         String ret_str = "" ;
         while (true){
             // go along left tree
             while (node!=null) {
-                stack.push(node) ;
+                stack.push( node) ;
                 node = node.left ;
             }
             if (stack.isEmpty()) break ;

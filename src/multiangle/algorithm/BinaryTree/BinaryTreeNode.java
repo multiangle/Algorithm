@@ -5,22 +5,30 @@ package multiangle.algorithm.BinaryTree;
  */
 public class BinaryTreeNode {
     public int value ;
-    public BinaryTreeNode left ;
-    public BinaryTreeNode right ;
+    public BinaryTreeNode left=null ;
+    public BinaryTreeNode right=null ;
 
     BinaryTreeNode(int val){
         this.value = val ;
     }
     public boolean hasLChild(){
-        return (left!=null) ;
+        return (this.left!=null) ;
     }
     public boolean hasRChild(){
-        return (right!=null);
+        return (this.right!=null);
     }
     public boolean valueEqual(int i){
-        return value==i;
+        return this.value==i;
     }
     public String toString(){
         return Integer.toString(value);
+    }
+    public boolean isLeft(BinaryTreeNode test){
+        if (left==null||test==null) return false ;
+        return left.value==test.value ;
+    }
+    public boolean isRight(BinaryTreeNode test){
+        if (right==null||test==null) return false ;
+        return right.value==test.value ;
     }
 }
