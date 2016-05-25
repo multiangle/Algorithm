@@ -2,6 +2,8 @@ package multiangle.algorithm.BinaryTree;
 
 import multiangle.algorithm.Stack;
 
+import java.util.LinkedList;
+
 /**
  * Created by multiangle on 2016/5/22.
  */
@@ -9,6 +11,7 @@ import multiangle.algorithm.Stack;
 public class AVLTree extends BinarySearchTree {
     private AVLNode root ;
     private AVLNode _hot ;
+    private AVLNode start_node=null ;
 
     public AVLTree(){
         root = null ;
@@ -57,11 +60,78 @@ public class AVLTree extends BinarySearchTree {
         }
         return true ;
     }
-//
-//    @Override
-//    public boolean remove(int value){
-//        return true ;
-//    }
+
+    @Override
+    public boolean remove(int value){
+        start_node = null ;
+        if (!removeNode(value)) return false ;
+        if (start_node==null) return true ;
+        AVLNode g = start_node ;
+        while(g!=null){
+            updateHeight(g);
+            if (g.balFac>1||g.balFac<-1){ //如果g失衡
+                AVLNode p,v ;
+                p = g.balFac>0 ? g.left : g.right ;
+                v = p.balFac>0 ? p.left : p.right ;
+                rotateAt(g, p, v);
+            }
+            g = g.parent ;
+        }
+        return true ;
+    }
+
+    private boolean removeNode(int value){
+        if (root==null) return false ; // 空树
+        AVLNode res = search(value) ;
+        if (res == null) return false ; // 不在树中
+        return removeNode(res) ;
+    }
+
+    private boolean removeNode(AVLNode res){
+        if (res.left==null && res.right==null){ // 左右结点为空，为叶节点
+            if (res.parent==null) { // 只有一个节点的情况
+                root = null ;
+                return true ;
+            }else{ //普通情况
+                start_node = res.parent ;
+                dropChild(res.parent,res) ;
+            }
+        }else if (res.left==null||res.right==null){ //左右结点一个空，一个不空
+            if (res.left==null){ // 左树为空
+                if (res.parent==null){ //且为根节点
+                    root = res.right ;
+                    root.parent = null ;
+                    res = null ;
+                    start_node = root ;
+                }else{ // 不为根节点
+                    start_node = res.parent ;
+                    res.right.parent = res.parent ;
+                    replaceChild(res.parent,res,res.right) ;
+                    res = null ;
+                }
+            }
+            else{ //右树为空
+                if (res.parent==null){
+                    root = res.left ;
+                    root.parent = null ;
+                    res = null ;
+                    start_node = root ;
+                }else{
+                    start_node = res.parent ;
+                    res.left.parent = res.parent ;
+                    replaceChild(res.parent,res,res.left) ;
+                    res = null ;
+                }
+            }
+        }else{ // 左右结点都不空的情况下
+            AVLNode next = nextNode(res.value) ; // 找到直接后继
+            int temp = res.value ; // 交换节点顺序
+            res.value = next.value ;
+            next.value = temp ;
+            removeNode(next) ;
+        }
+        return true ;
+    }
 
     @Override
     public AVLNode search(int target){
@@ -84,6 +154,55 @@ public class AVLTree extends BinarySearchTree {
                 else return null ;
             }
         }
+    }
+
+    @Override
+    public AVLNode nextNode(int value){
+        AVLNode ret = null ;
+        boolean finded = false ;
+        boolean goon = true ;
+
+        Stack<AVLNode> stack = new Stack() ;
+        AVLNode node = root ;
+        while (goon){
+            // go along left tree
+            while (node!=null) {
+                stack.push(node) ;
+                node = node.left ;
+            }
+            if (stack.isEmpty()) break ;
+            // visit node
+            node = stack.pop() ;
+            if (finded) {ret = node; goon=false; }
+            if (node.value==value) finded=true ;
+            node = node.right ;
+        }
+        return ret ;
+    }
+
+    public boolean replaceChild(AVLNode parent, AVLNode old_child, AVLNode new_child){
+        if (parent.isLeft(old_child)) {
+            parent.left = new_child ;
+            return true ;
+        }
+        else if (parent.isRight(old_child)){
+            parent.right = new_child ;
+            return true ;
+        }
+        return false ;
+    }
+
+    public boolean dropChild(AVLNode parent, AVLNode child){
+        if (parent.isLeft(child)){
+            parent.left = null ;
+            child = null ;
+            return true ;
+        }else if (parent.isRight(child)){
+            parent.right = null ;
+            child = null ;
+            return true ;
+        }
+        return false ;
     }
 
     // 注意3+4重构
@@ -134,15 +253,34 @@ public class AVLTree extends BinarySearchTree {
         AVLTree at = new AVLTree() ;
         at.insert(1) ;
         at.insert(2) ;
-        System.out.println("root " + at.root + " left " + at.root.left + " right " + at.root.right);
+        System.out.println(at);
         at.insert(3) ;
-        System.out.println("root " + at.root + " left "+at.root.left + " right " + at.root.right);
+        System.out.println(at);
         at.insert(4) ;
-        System.out.println("root " + at.root + " left "+at.root.left + " right " + at.root.right);
+        System.out.println(at);
         at.insert(5) ;
-        System.out.println("root " + at.root + " left "+at.root.left + " right " + at.root.right);
-        System.out.println(at.travIn(at.root));
-        System.out.println(at.root.left);
+        System.out.println(at);
+        at.remove(2) ;
+        System.out.println(at);
+    }
+
+    public String toString(){
+        String ret = "" ;
+        LinkedList<AVLNode> list = new LinkedList<AVLNode>() ;
+        AVLNode current ;
+        list.add(root) ;
+        while(!list.isEmpty()){
+            current = list.remove(0) ;
+            if (current==null) continue ;
+            String temp = current.toString() + "->" ;
+            if (current.parent==null) temp += "null" ;
+            else temp += current.parent ;
+            temp += "\t" ;
+            ret = ret + temp ;
+            list.add(current.left) ;
+            list.add(current.right) ;
+        }
+        return ret ;
     }
 
 }
