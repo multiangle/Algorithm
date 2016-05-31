@@ -33,6 +33,15 @@ public class BTNode<T extends Comparable<T>> {
         child.add(1,null) ;
     }
 
+    public BTNode(T value, BTNode left, BTNode right){
+        parent = null ;
+        key = new Vector<T>() ;
+        key.add(0,value);
+        child = new Vector<BTNode>() ;
+        child.add(0,left) ;
+        child.add(1,right) ;
+    }
+
     /**
      * 如果搜到值，则返回相应的值所在的数组位置。否则返回不大于目标的节点位置。
      * 特别的，有可能返回-1值，表示目标小于数组中所有值。
@@ -45,7 +54,15 @@ public class BTNode<T extends Comparable<T>> {
             else if (key.get(i).compareTo(target) > 0) return i-1 ;
         }
         return key.size()-1 ;
-
+    }
+    public void clean(){
+        parent = null ;
+        key = null ;
+        child = null ;
+    }
+    public String toString(){
+        if (key==null) return "null" ;
+        else return " key: "+key.toString() ;
     }
 
 }
