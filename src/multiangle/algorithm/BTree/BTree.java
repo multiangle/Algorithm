@@ -2,14 +2,17 @@ package multiangle.algorithm.BTree;
 
 /**
  * Created by multiangle on 2016/5/29.
+ * B树中，每个节点至多m分支，m-1个关键码
+ * 非根节点至少ceil(m>>1)分支，ceil(m>>1)-1关键码
+ * 根节点至少2个分支，1个关键码
  */
 public class BTree<T extends  Comparable<T>> {
     protected int _size,_order ;  // 关键码总数，阶次
     protected BTNode<T> _root,_hot ;
-    protected  int _m ; // 关键码数目
+    protected  int _m ; // 分支数目
 
     protected void solveOverflow( BTNode<T> node ){
-        while (node.key.size()>_m){
+        while (node.key.size()>_m-1){
             int mid = _m>>1 ;
 
             BTNode<T> left = new BTNode<T>() ;
@@ -59,7 +62,106 @@ public class BTree<T extends  Comparable<T>> {
         }
     }
 
-    protected void solveUnderflow( BTNode<T> input ){}
+    protected void solveUnderflow( BTNode<T> node ){
+        // 如果节点规模符合要求，则数目都不做
+        if (node.key.size()>=Math.ceil((double)_m/2)-1 ) return ;
+        if (node.parent==null && node.key.size()>=0) return ;
+        if (node==null) return ;
+
+        // 处理普通节点的情况
+        BTNode p = node.parent ;
+        int node_index = p.child.indexOf(node) ;
+        if (node_index>0 && //当左兄弟中有节点可以借用时
+                ((BTNode)p.child.get(node_index-1)).key.size()> (Math.ceil((double)_m/2)-1)){
+            BTNode left = (BTNode)p.child.get(node_index-1) ;
+
+            node.key.add(0, (T) p.key.get(node_index - 1)); // 将中间节点位置移入右节点
+            p.key.set(node_index - 1, left.key.remove(left.key.size() - 1)) ; // 左节点最后移入中间节点,去掉左节点结尾
+
+            node.child.add(0,(BTNode)left.child.remove(left.child.size()-1)) ;
+            if (node.child.get(0)!=null) node.child.get(0).parent = node ;
+        }else if ((node_index<p.child.size()-1) && // 当有右兄弟可以借用时
+                ((BTNode)p.child.get(node_index+1)).key.size()> (Math.ceil((double)_m/2)-1)){
+            BTNode right = (BTNode)p.child.get(node_index+1) ;
+
+            node.key.add((T)p.key.get(node_index));
+            p.key.set(node_index,right.key.remove(0)) ;
+
+            node.child.add((BTNode)right.child.remove(0)) ;
+            if (node.child.lastElement()!=null) node.child.lastElement().parent = node ;
+        }else{ // 左右节点均无法借用时，需要合并节点
+            BTNode merged = new BTNode() ;
+            if (node_index>0){ // 如果有左兄弟，则与左兄弟合并
+                BTNode left = (BTNode)p.child.get(node_index-1) ;
+
+                merged.child.clear();
+                // 处理左兄弟
+                merged.child.add(left.child.get(0));
+                if (merged.child.get(0)!=null) ((BTNode)merged.child.get(0)).parent = merged ;
+                for (int i=0;i<left.key.size();i++){
+                    merged.key.add(left.key.get(i));
+                    BTNode temp = (BTNode)left.child.get(i+1) ;
+                    merged.child.add(temp);
+                    if (temp!=null) temp.parent = merged ;
+                }
+                // 处理中间节点
+                merged.key.add(p.key.get(node_index-1));
+                // 处理右兄弟
+                merged.child.add(node.child.get(0));
+                if (merged.child.lastElement()!=null) ((BTNode)merged.child.lastElement()).parent = merged ;
+                for (int i=0;i<node.key.size();i++){
+                    merged.key.add(node.key.get(i));
+                    BTNode temp = (BTNode)node.child.get(i+1) ;
+                    merged.child.add(temp);
+                    if (temp!=null) temp.parent = merged ;
+                }
+                p.key.remove(node_index-1) ;
+                p.child.remove(node_index) ;
+                p.child.set(node_index-1,merged) ;
+                merged.parent = p ;
+            }else{ //如果没有做兄弟，则与右兄弟合并
+                BTNode right = (BTNode)p.child.get(node_index+1) ;
+
+                merged.child.clear();
+                // 处理左兄弟
+                merged.child.add(node.child.get(0));
+                if (merged.child.get(0)!=null)((BTNode)merged.child.get(0)).parent = merged ;
+                for (int i=0;i<node.key.size();i++){
+                    merged.key.add(node.key.get(i));
+                    BTNode temp = (BTNode)node.child.get(i+1) ;
+                    merged.child.add(temp);
+                    if (temp!=null) temp.parent = merged ;
+                }
+                // 处理中间节点
+                merged.key.add(p.key.get(node_index));
+                // 处理右兄弟
+                merged.child.add(right.child.get(0));
+                if (merged.child.lastElement()!=null) ((BTNode)merged.child.lastElement()).parent = merged ;
+                for (int i=0;i<right.key.size();i++){
+                    merged.key.add(right.key.get(i));
+                    BTNode temp = (BTNode)right.child.get(i+1) ;
+                    merged.child.add(temp);
+                    if (temp!=null) temp.parent = merged ;
+                }
+                p.key.remove(node_index) ;
+                p.child.remove(node_index+1) ;
+                p.child.set(node_index,merged) ;
+                merged.parent = p ;
+            }
+            if (p.key.size()==0){ // if p 此时为空
+                if (p.parent==null){ // if p 为 root, 则转移root
+                    merged.parent = null ;
+                    _root = merged ;
+                    return ;
+                }else{
+                    System.out.println("unknown error");
+                }
+
+            }
+            solveUnderflow(p); //合并以后需要处理上一级的问题
+        }
+
+    }
 
     public BTree(int m){
         _size = 0 ;
@@ -80,6 +182,7 @@ public class BTree<T extends  Comparable<T>> {
         }
         return null ;
     }
+
     public boolean insert( T input ){
         BTNode node = search(input) ;
         if (node!=null) return false ;
@@ -90,10 +193,30 @@ public class BTree<T extends  Comparable<T>> {
         solveOverflow(_hot); // 如果发生上溢，则分裂。
         return true ;
     }
-    public boolean remove( T output){ return true ;}
+
+    public boolean remove( T target){
+        BTNode v = search(target) ;
+        if (v==null) return false ;
+        int index = v.searchKey(target) ;
+        if (v.child.get(0)!=null){
+            // 如果v不是叶节点，则找到直接后继
+            BTNode u = (BTNode)v.child.get(index+1) ;
+            while (u.child.get(0)!=null){
+                u = (BTNode) u.child.get(0) ;
+            }
+            v.key.set(index,u.key.get(0)) ;
+            v = u ;
+            index = 0;
+        }
+        v.key.remove(index) ;
+        v.child.remove(index+1) ;
+        _size-- ;
+        solveUnderflow(v);
+        return true ;
+    }
 
     public static void main(String[] args){
-        BTree bt = new BTree<Integer>(3) ;
+        BTree bt = new BTree<Integer>(5) ;
         bt.insert(0) ;
         bt.insert(1) ;
         bt.insert(2) ;
@@ -101,11 +224,27 @@ public class BTree<T extends  Comparable<T>> {
         bt.insert(4) ;
         bt.insert(5) ;
         bt.insert(6) ;
-        bt.insert(7) ;
-        bt.insert(8) ;
+        bt.insert(7);
+        bt.insert(8);
         bt.insert(9) ;
         System.out.println(bt._root);
         System.out.println(bt._root.child);
-        System.out.println( ((BTNode)bt._root.child.get(1)).child );
+        System.out.println(((BTNode) bt._root.child.get(1)).child);
+        System.out.println("--------------------------------------");
+        bt.remove(9) ;
+        bt.remove(8) ;
+        bt.remove(7) ;
+        bt.remove(6) ;
+        bt.remove(5) ;
+        bt.remove(4) ;
+        bt.remove(3) ;
+        bt.remove(2) ;
+        bt.remove(1) ;
+        bt.remove(0) ;
+        System.out.println(bt._root);
+        System.out.println(bt._root.child);
+//        System.out.println(((BTNode) bt._root.child.get(1)).child);
+        System.out.println("--------------------------------------");
+
     }
 }
