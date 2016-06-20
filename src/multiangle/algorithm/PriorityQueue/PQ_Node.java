@@ -17,4 +17,11 @@ public class PQ_Node<T> {
         this.value = value ;
         this.priority = priority ;
     }
+
+    public String toString(){
+        String ert = "" ;
+        ert += value.toString()+";" ;
+        ert += priority ;
+        return ert ;
+    }
 }

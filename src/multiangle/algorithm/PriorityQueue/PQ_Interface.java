@@ -5,7 +5,7 @@ package multiangle.algorithm.PriorityQueue;
  */
 public interface PQ_Interface<T> {
 
-    void insert(PQ_Node<T> v) ; //按优先级次序插入词条
+    void insert(T v, int priority) ; //按优先级次序插入词条
 
     T getMax() ; //取出优先级最高词条
 
