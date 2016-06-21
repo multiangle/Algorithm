@@ -5,7 +5,7 @@ import java.util.Comparator;
 /**
  * Created by multiangle on 2016/6/19.
  */
-public class PQ_Node<T> {
+public class PQ_Node<T>{
     public T value ;
     public int priority ;
 

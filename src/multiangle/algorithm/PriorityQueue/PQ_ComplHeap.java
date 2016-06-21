@@ -12,9 +12,11 @@ public class PQ_ComplHeap<T> implements PQ_Interface<T>{ // 完全二叉堆
     protected ArrayList<PQ_Node<T>> data ;
 
     PQ_ComplHeap(T[] A){
+        data = new ArrayList<PQ_Node<T>>() ;
         for (T a:A){
-            insert(a);
+            data.add(new PQ_Node<T>(a));
         }
+        heapify();
     }
     PQ_ComplHeap(){
         data = new ArrayList<PQ_Node<T>>() ;
@@ -60,8 +62,7 @@ public class PQ_ComplHeap<T> implements PQ_Interface<T>{ // 完全二叉堆
             PQ_Node<T> p = data.get(p_index) ;
             PQ_Node<T> n = data.get(index) ;
             if (n.priority > p.priority){
-                data.set(p_index, n) ;
-                data.set(index, p) ;
+                swapNode(p_index,index);
                 index = p_index ;
             }else{
                 break ;
@@ -69,8 +70,10 @@ public class PQ_ComplHeap<T> implements PQ_Interface<T>{ // 完全二叉堆
         }
     }
 
-    protected void heapify(int n){
-
+    protected void heapify(){
+        for (int i=(data.size()-1)>>1 ;i>=0;i--){
+            percolateDown(i);
+        }
     }
 
     public void insert(T value){
@@ -97,6 +100,15 @@ public class PQ_ComplHeap<T> implements PQ_Interface<T>{ // 完全二叉堆
         percolateDown(0);
         return max_element ;
     } //删除优先级最高词条
+
+    public ArrayList<T> sort(){
+        ArrayList<T> ret = new ArrayList<T>() ;
+        ArrayList<PQ_Node<T>> cp = (ArrayList)data.clone() ;
+        while (!cp.isEmpty()){
+            ret.add(delMax());
+        }
+        return ret ;
+    }
 
     public String toString(){
         String ret = "" ;
