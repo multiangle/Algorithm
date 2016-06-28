@@ -75,9 +75,16 @@ public class Sort {
     void merge_sort(T[] inputArray){
         merge_sort(inputArray,0,inputArray.length);
     }
+    public static <T extends  Comparable<? super T>>
+    void quick_sort(T[] inputArray){
+
+    }
+
     public static void main(String[] args){
         Double[] data = {1.0,2.0,3.0,4.0,5.5,5.1,6.6,4.2,3.2,1.5,3.8,3.9,4.5,3.8} ;
         Sort.merge_sort(data);
         System.out.println(Arrays.toString(data));
     }
+
+
 }
