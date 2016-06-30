@@ -2,6 +2,7 @@ package multiangle.algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -76,14 +77,41 @@ public class Sort {
         merge_sort(inputArray,0,inputArray.length);
     }
     public static <T extends  Comparable<? super T>>
+    void quick_sort(T[] inputArray, int low, int high){ // 处理[low,high]的序列
+        int low_range = low, high_range = high ;
+        int type = -1 ;
+        int tag_index = low++ ;
+        T tag = inputArray[tag_index] ;
+        while(low<high){
+            if (type==-1){
+                while ((low<high)&&(inputArray[high--].compareTo(tag)>=0));
+                type = 1 ;
+                inputArray[tag_index] = inputArray[high] ;
+                tag_index = high ;
+            }else{
+                while ((low<high)&&(inputArray[low++].compareTo(tag)<=0));
+                type = -1 ;
+                inputArray[tag_index] = inputArray[low] ;
+                tag_index = low ;
+            }
+        }
+        
+        quick_sort(inputArray,low_range,tag_index-1);
+        quick_sort(inputArray,tag_index+1,high_range);
+    }
+    public static <T extends Comparable<? super T>>
     void quick_sort(T[] inputArray){
-
+        quick_sort(inputArray,0,inputArray.length-1);
     }
 
     public static void main(String[] args){
         Double[] data = {1.0,2.0,3.0,4.0,5.5,5.1,6.6,4.2,3.2,1.5,3.8,3.9,4.5,3.8} ;
-        Sort.merge_sort(data);
-        System.out.println(Arrays.toString(data));
+        Sort.quick_sort(data);
+        for (Double i:data){
+            System.out.println(i);
+        }
+//        System.out.println(Arrays.toString(data));
+
     }
 
 
