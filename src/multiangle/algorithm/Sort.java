@@ -110,11 +110,34 @@ public class Sort {
     void quick_sort(T[] inputArray){
         quick_sort(inputArray,0,inputArray.length-1);
     }
+    public static <T extends Comparable<? super T>>
+    void quick_sort2(T[] inputArray){
+        quick_sort2(inputArray,0,inputArray.length);
+    }
+    public static <T extends Comparable<? super T>>
+    void quick_sort2(T[] inputArray, int low, int high){ //[low,high)
+        T tag = inputArray[low] ;
+        int mid = low ;
+        for(int k=low+1; k<high ;k++){
+            if (inputArray[k].compareTo(tag)<0){
+                T temp = inputArray[k] ;
+                inputArray[k] = inputArray[++mid] ;
+                inputArray[mid] = temp ;
+            }
+        }
+        T temp = inputArray[mid] ;
+        inputArray[mid] = tag ;
+        inputArray[low] = temp ;
+        if (low<mid)
+            quick_sort2(inputArray,low,mid);
+        if (mid+1<high)
+            quick_sort2(inputArray,mid+1,high);
+    }
 
     public static void main(String[] args){
         Double[] data = {1.0,2.0,3.0,4.0,5.5,5.1,6.6,4.2,3.2,1.5,3.8,3.9,4.5,3.8} ;
         Integer[] data2 = {4,1,2,5,6} ;
-        Sort.quick_sort(data);
+        Sort.quick_sort2(data);
         for (Double i:data){
             System.out.println(i);
         }
