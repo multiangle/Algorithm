@@ -82,22 +82,29 @@ public class Sort {
         int type = -1 ;
         int tag_index = low++ ;
         T tag = inputArray[tag_index] ;
-        while(low<high){
+        while(low<=high){
             if (type==-1){
-                while ((low<high)&&(inputArray[high--].compareTo(tag)>=0));
-                type = 1 ;
-                inputArray[tag_index] = inputArray[high] ;
-                tag_index = high ;
+                while (inputArray[high--].compareTo(tag)>=0){if (low>high) break ;}
+                if (inputArray[high+1].compareTo(tag)<0){
+                    type = 1 ;
+                    inputArray[tag_index] = inputArray[high+1] ;
+                    tag_index = high+1 ;
+                }
             }else{
-                while ((low<high)&&(inputArray[low++].compareTo(tag)<=0));
-                type = -1 ;
-                inputArray[tag_index] = inputArray[low] ;
-                tag_index = low ;
+                while (inputArray[low++].compareTo(tag)<=0){if (low>high) break ;}
+                if (inputArray[low-1].compareTo(tag)>0){
+                    type = -1 ;
+                    inputArray[tag_index] = inputArray[low-1] ;
+                    tag_index = low-1 ;
+                }
             }
+
         }
-        
-        quick_sort(inputArray,low_range,tag_index-1);
-        quick_sort(inputArray,tag_index+1,high_range);
+        inputArray[tag_index] = tag ;
+        if (low_range<tag_index-1)
+            quick_sort(inputArray,low_range,tag_index-1);
+        if (tag_index+1<high_range)
+            quick_sort(inputArray,tag_index+1,high_range);
     }
     public static <T extends Comparable<? super T>>
     void quick_sort(T[] inputArray){
@@ -106,6 +113,7 @@ public class Sort {
 
     public static void main(String[] args){
         Double[] data = {1.0,2.0,3.0,4.0,5.5,5.1,6.6,4.2,3.2,1.5,3.8,3.9,4.5,3.8} ;
+        Integer[] data2 = {4,1,2,5,6} ;
         Sort.quick_sort(data);
         for (Double i:data){
             System.out.println(i);
