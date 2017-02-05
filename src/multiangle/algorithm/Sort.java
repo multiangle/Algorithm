@@ -1,9 +1,6 @@
 package multiangle.algorithm;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by multiangle on 2016/4/3.
@@ -76,15 +73,16 @@ public class Sort {
     void merge_sort(T[] inputArray){
         merge_sort(inputArray,0,inputArray.length);
     }
+
     public static <T extends  Comparable<? super T>>
     void quick_sort(T[] inputArray, int low, int high){ // 处理[low,high]的序列
         int low_range = low, high_range = high ;
-        int type = -1 ;
+        int type = -1 ;         // type = -1 表示从高到低 1表示从低到高
         int tag_index = low++ ;
         T tag = inputArray[tag_index] ;
         while(low<=high){
             if (type==-1){
-                while (inputArray[high--].compareTo(tag)>=0){if (low>high) break ;}
+                while (inputArray[high--].compareTo(tag)>=0){if (low>high) break ;} // break 时， data[high]<tag 或 low==high
                 if (inputArray[high+1].compareTo(tag)<0){
                     type = 1 ;
                     inputArray[tag_index] = inputArray[high+1] ;
@@ -106,21 +104,24 @@ public class Sort {
         if (tag_index+1<high_range)
             quick_sort(inputArray,tag_index+1,high_range);
     }
+
     public static <T extends Comparable<? super T>>
     void quick_sort(T[] inputArray){
         quick_sort(inputArray,0,inputArray.length-1);
     }
+
     public static <T extends Comparable<? super T>>
     void quick_sort2(T[] inputArray){
         quick_sort2(inputArray,0,inputArray.length);
     }
+
     public static <T extends Comparable<? super T>>
     void quick_sort2(T[] inputArray, int low, int high){ //[low,high)
         T tag = inputArray[low] ;
         int mid = low ;
         for(int k=low+1; k<high ;k++){
-            if (inputArray[k].compareTo(tag)<0){
-                T temp = inputArray[k] ;
+            if (inputArray[k].compareTo(tag)<0){    // if data[k] < tag :
+                T temp = inputArray[k] ;            // 交换 data[k] 与 data[++mid]
                 inputArray[k] = inputArray[++mid] ;
                 inputArray[mid] = temp ;
             }
@@ -134,13 +135,63 @@ public class Sort {
             quick_sort2(inputArray,mid+1,high);
     }
 
+    public static <T extends Comparable<? super T>>
+    void quick_sort2_debug(List<T> inputArray, int low, int high){
+        T tag = inputArray.get(low) ;
+        int mid = low ;
+        for(int k=low+1; k<high ;k++){
+            if (inputArray.get(k).compareTo(tag)<0){    // if data[k] < tag :
+                T temp = inputArray.get(k) ;            // 交换 data[k] 与 data[++mid]
+                inputArray.set(k, inputArray.get(++mid)) ;
+                inputArray.set(mid, temp) ;
+            }
+            System.out.println(inputArray);
+        }
+        T temp = inputArray.get(mid) ; // 交换 data[mid] 和 data[low]
+        inputArray.set(mid, tag) ;
+        inputArray.set(low, temp) ;
+//        if (low<mid)
+//            quick_sort2_debug(inputArray, low, mid);
+//        if (mid+1<high)
+//            quick_sort2_debug(inputArray, mid + 1, high);
+    }
+
+    public static void quickSort_easy(Integer[] list, int low, int high){ // 对[start,end] 之间的数据进行排序
+        if (high<=low) return ;
+        int low_ori = low ; // 注意，由于 low,high 在遍历过程中会发生改变，所以边界要事先备份
+        int high_ori = high ;
+        int target = list[low] ;
+        int midpos = low ;
+        low += 1 ;
+        int type = -1 ;
+        while (low<high){
+            if (type == -1){
+                if (list[high]<=target){
+                    list[midpos] = list[high] ;  // midpos 表示空闲的坑位。把拔出的萝卜填入上一个坑，又多出一个坑来
+                    midpos = high ;
+                    type = 1 ;
+                }
+                high -= 1 ;
+            }else{
+                if (list[low]>target){
+                    list[midpos] = list[low] ;
+                    midpos = low ;
+                    type = -1 ;
+                }
+                low += 1 ;
+            }
+        }
+        list[midpos] = target ;
+        if (midpos>low_ori) quickSort_easy(list,low_ori,midpos-1);
+        if (high_ori>midpos) quickSort_easy(list,midpos+1,high_ori);
+    }
+
     public static void main(String[] args){
         Double[] data = {1.0,2.0,3.0,4.0,5.5,5.1,6.6,4.2,3.2,1.5,3.8,3.9,4.5,3.8} ;
-        Integer[] data2 = {4,1,2,5,6} ;
-        Sort.quick_sort2(data);
-        for (Double i:data){
-            System.out.println(i);
-        }
+        Integer[] data2 = {4,1,2,5,6,1,3,6,4,8,2,9,0} ;
+        List<Integer> array = Arrays.asList(data2) ;
+        Sort.quick_sort2_debug(array,0,data.length-1);
+        System.out.println(array);
 //        System.out.println(Arrays.toString(data));
 
     }
