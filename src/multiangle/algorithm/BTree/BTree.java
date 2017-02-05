@@ -76,7 +76,7 @@ public class BTree<T extends  Comparable<T>> {
             BTNode left = (BTNode)p.child.get(node_index-1) ;
 
             node.key.add(0, (T) p.key.get(node_index - 1)); // 将中间节点位置移入右节点
-            p.key.set(node_index - 1, left.key.remove(left.key.size() - 1)) ; // 左节点最后移入中间节点,去掉左节点结尾
+            p.key.set(node_index - 1, left.key.remove(left.key.size() - 1)) ; // 左节点最后移入中间节点,去掉左节点结尾，即从左节点借一个去当key
 
             node.child.add(0,(BTNode)left.child.remove(left.child.size()-1)) ;
             if (node.child.get(0)!=null) node.child.get(0).parent = node ;
@@ -204,11 +204,11 @@ public class BTree<T extends  Comparable<T>> {
             while (u.child.get(0)!=null){
                 u = (BTNode) u.child.get(0) ;
             }
-            v.key.set(index,u.key.get(0)) ;
+            v.key.set(index,u.key.get(0)) ; // 将 直接后继 与 该点进行对换
             v = u ;
             index = 0;
         }
-        v.key.remove(index) ;
+        v.key.remove(index) ; // 此时能够保证待删除的节点一定处于叶节点
         v.child.remove(index+1) ;
         _size-- ;
         solveUnderflow(v);
